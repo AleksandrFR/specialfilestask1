@@ -5,6 +5,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,10 +17,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,14 +56,34 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
-        String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
-        String fileName = "data.csv";
-        List<Employee> list1 = parseCSV(columnMapping, fileName);
-        writeString(listToJson(list1), "1");
-        List<Employee> list2 = parseXML("data.xml");
-        writeString(listToJson(list2), "2");
+    private static String readString(String fileName) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            return reader.readLine();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    private static List<Employee> jsonToList(String json) {
+        List<Employee> list = new ArrayList<>();
+        try {
+            JSONParser parser = new JSONParser();
+            JSONArray jsonArray = (JSONArray) parser.parse(json);
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            for (int i = 0; jsonArray.size() > i; i++) {
+                Employee employee = gson.fromJson(String.valueOf(jsonArray.get(i)), Employee.class);
+                list.add(employee);
+            }
+            return list;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static List<Employee> parseXML(String s) {
@@ -96,6 +116,16 @@ public class Main {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) {
+        String[] columnMapping = {"id", "firstName", "lastName", "country", "age"};
+        String fileName = "data.csv";
+        List<Employee> list1 = parseCSV(columnMapping, fileName);
+        writeString(listToJson(list1), "1");
+        List<Employee> list2 = parseXML("data.xml");
+        writeString(listToJson(list2), "2");
+        System.out.println(jsonToList(readString("data1.json")));
     }
 }
 

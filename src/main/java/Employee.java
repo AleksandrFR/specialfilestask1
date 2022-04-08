@@ -16,4 +16,16 @@ public class Employee {
         this.country = country;
         this.age = age;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("\nEmployee{");
+        sb.append("id=").append(id);
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", country='").append(country).append('\'');
+        sb.append(", age=").append(age);
+        sb.append('}');
+        return sb.toString();
+    }
 }
