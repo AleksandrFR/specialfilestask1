@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Employee {
     public long id;
     public String firstName;
@@ -27,5 +29,22 @@ public class Employee {
         sb.append(", age=").append(age);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, country, age);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !o.getClass().equals(Employee.class)) return false;
+        Employee employee = (Employee) o;
+        return (this.id == employee.id
+                && this.firstName.equals(employee.firstName)
+                && this.lastName.equals(employee.lastName)
+                && this.country.equals(employee.country)
+                && this.age == employee.age);
     }
 }
