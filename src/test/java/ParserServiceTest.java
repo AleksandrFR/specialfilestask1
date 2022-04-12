@@ -1,3 +1,4 @@
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,5 +46,14 @@ public class ParserServiceTest {
                 "{\"id\":2,\"firstName\":\"Inav\",\"lastName\":\"Petrov\",\"country\":\"RU\",\"age\":23}]";
         String result = parserService.readString(fn);
         assertEquals(result, expectedStr);
+    }
+
+    @Test
+    public void containsTest() {
+        String s = "data.xml";
+
+        List<Employee> result = parserService.parseXML(s);
+
+        Matchers.contains(expected, result);
     }
 }
